@@ -211,7 +211,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     width: 115,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text('Fotograf',style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                      child: Text('Fotografování',style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                     ),
                   ),
                   Container(
@@ -258,7 +258,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   width: 245,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text('Ceny Benzinu a Nafty', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),),
+                    child: Text('Ceny Benzínu a Nafty', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),),
                   ),
                 ),
                 Container(
