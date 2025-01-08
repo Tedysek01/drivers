@@ -30,14 +30,14 @@ class _MyHomePageState extends State<MyHomePage> {
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
-                            color: Colors.blue),
+                            color: Color.fromRGBO(235, 211, 248,1)),
                       ),
                       Text(
                         'Zobrazit vse...',
                         style: TextStyle(
                             fontFamily: 'Inter',
                             fontSize: 12,
-                            color: Colors.blue),
+                            color: Color.fromRGBO(235, 211, 248,1)),
                       )
                     ],
                   ),
@@ -48,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          color: const Color.fromRGBO(234, 242, 255, 1),
+                          color: const Color.fromRGBO(122, 28, 172,1),
                           borderRadius: BorderRadius.all(Radius.circular(10)),
                         ),
                         child: Padding(
@@ -64,6 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Text('Liberecka srazova sraz u globusu',
                                       style: TextStyle(
                                           fontFamily: 'Inter',
+                                          color:Color.fromRGBO(235, 211, 248,1),
                                           fontWeight: FontWeight.w600,
                                           fontSize: 16)),
                                   Row(
@@ -107,7 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          color: const Color.fromRGBO(234, 242, 255, 1),
+                          color: const Color.fromRGBO(122, 28, 172,1),
                           borderRadius: BorderRadius.all(Radius.circular(10)),
                         ),
                         child: Padding(
@@ -124,6 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     'Drifty Jablonec',
                                     style: TextStyle(
                                         fontFamily: 'Inter',
+                                        color:Color.fromRGBO(235, 211, 248,1),
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16),
                                   ),
@@ -168,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           label: Text('Vytvorit akci'),
                           style: ElevatedButton.styleFrom(
                             
-                            foregroundColor: Colors.white,
+                            foregroundColor:Color.fromRGBO(235, 211, 248,1),
                             backgroundColor: Colors.blue,
                             iconColor: Colors.white,
                             iconSize: 20,

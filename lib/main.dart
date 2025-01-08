@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Inter',
         useMaterial3: true,
-        scaffoldBackgroundColor: Colors.white
+        scaffoldBackgroundColor: Color.fromRGBO(46, 7, 63, 1)
       ),
       home: const MyHomePage(),
     );
