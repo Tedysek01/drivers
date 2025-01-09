@@ -31,14 +31,14 @@ class _MyHomePageState extends State<MyHomePage> {
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
-                            color: Color.fromRGBO(235, 211, 248,1)),
+                            color: colorScheme.onPrimary),
                       ),
                       Text(
                         'Zobrazit vse...',
                         style: TextStyle(
                             fontFamily: 'Inter',
                             fontSize: 12,
-                            color: colorScheme.primary),
+                            color: colorScheme.onPrimary),
                       )
                     ],
                   ),
@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          color: const Color.fromRGBO(122, 28, 172,1),
+                          color: colorScheme.primary,
                           borderRadius: BorderRadius.all(Radius.circular(10)),
                         ),
                         child: Padding(
@@ -65,14 +65,18 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Text('Liberecka srazova sraz u globusu',
                                       style: TextStyle(
                                           fontFamily: 'Inter',
-                                          color:Color.fromRGBO(235, 211, 248,1),
+                                          color:colorScheme.onPrimary,
                                           fontWeight: FontWeight.w600,
-                                          fontSize: 16)),
+                                          fontSize: 16,
+                                          )),
                                   Row(
                                     children: [
                                       Icon(Icons.place_outlined, size: 20,),
                                       SizedBox(width: 5,),
-                                      Text('Globus Liberec, Liberec')
+                                      Text('Globus Liberec, Liberec',style: TextStyle(
+                                        color: colorScheme.onPrimary,
+
+                                      ),)
                                     ],
                                   ),
                                   SizedBox(height: 2,),
@@ -80,7 +84,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     children: [
                                       Icon(Icons.date_range, size: 20,),
                                       SizedBox(width: 5,),
-                                      Text('13.3.2025 18:30')
+                                      Text('13.3.2025 18:30',style: TextStyle(
+                                        color: colorScheme.onPrimary,)),
                                     ],
                                   )
                                 ],
