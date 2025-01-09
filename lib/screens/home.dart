@@ -1,4 +1,5 @@
 
+import 'package:drivers/style/barvy.dart';
 import 'package:flutter/material.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -37,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         style: TextStyle(
                             fontFamily: 'Inter',
                             fontSize: 12,
-                            color: Color.fromRGBO(235, 211, 248,1)),
+                            color: colorScheme.primary),
                       )
                     ],
                   ),
