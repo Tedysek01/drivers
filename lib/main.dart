@@ -1,7 +1,13 @@
 import 'package:drivers/screens/home.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart'; // Firebase core balíček
+import '../firebase_options.dart'; // Import Firebase konfiguračního souboru
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Zajišťuje inicializaci widgetů
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform, // Načte konfiguraci podle platformy
+  );
   runApp(const MyApp());
 }
 
@@ -16,10 +22,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Inter',
         useMaterial3: true,
-        scaffoldBackgroundColor: Color.fromRGBO(46, 7, 63, 1)
+        scaffoldBackgroundColor: const Color.fromRGBO(46, 7, 63, 1),
       ),
       home: const MyHomePage(),
     );
   }
 }
-

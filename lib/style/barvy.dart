@@ -6,7 +6,7 @@ final ColorScheme colorScheme = ColorScheme(
   surface: Color.fromRGBO(46, 7, 63,1),
   error: Colors.pink,
   onPrimary: Color.fromRGBO(235, 211, 248,1),
-  onSecondary: Color.fromRGBO(235, 211, 248,1),
+  onSecondary: Color.fromRGBO(218, 185, 237, 1),
   onSurface: Color.fromRGBO(235, 211, 248,1),
   onError: Colors.white,
   brightness: Brightness.light,
