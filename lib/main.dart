@@ -1,4 +1,5 @@
 import 'package:drivers/screens/home.dart';
+import 'package:drivers/style/barvy.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart'; // Firebase core balíček
 import '../firebase_options.dart'; // Import Firebase konfiguračního souboru
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Inter',
         useMaterial3: true,
-        scaffoldBackgroundColor: const Color.fromRGBO(46, 7, 63, 1),
+        scaffoldBackgroundColor: colorScheme.surface,
       ),
       home: const MyHomePage(),
     );

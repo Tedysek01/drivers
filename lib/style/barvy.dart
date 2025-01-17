@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
 final ColorScheme colorScheme = ColorScheme(
-  primary: Color.fromRGBO(173, 73, 225, 1),
-  secondary: Color.fromRGBO(122, 28, 172, 1),
-  surface: Color.fromRGBO(46, 7, 63,1),
-  error: Colors.pink,
-  onPrimary: Color.fromRGBO(235, 211, 248,1),
-  onSecondary: Color.fromRGBO(218, 185, 237, 1),
-  onSurface: Color.fromRGBO(235, 211, 248,1),
-  onError: Colors.white,
-  brightness: Brightness.light,
-  // More colors
+  primary: Color(0xFFFF6A00), // Vibrant orange for primary
+  secondary: Color(0xFF1F1F1F), // Dark black-gray for secondary
+  surface: Color(0xFF2C2C2C), // Slightly lighter black-gray for surfaces
+  error: Color(0xFFD32F2F), // Standard material error red
+  onPrimary: Color(0xFFFFFFFF), // White for contrast on primary
+  onSecondary: Color(0xFFFFFFFF), // White for contrast on secondary
+  onSurface: Color(0xFFFFFFFF), // White for text/icons on surface
+  onError: Color(0xFFFFFFFF), // White for contrast on errors
+  brightness: Brightness.dark, // Dark theme
 );

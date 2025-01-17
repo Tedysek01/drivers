@@ -1,4 +1,5 @@
 import 'package:drivers/screens/create_event.dart';
+import 'package:drivers/screens/event_details.dart';
 import 'package:drivers/style/barvy.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -12,35 +13,52 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-
-
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent, // Průhledné pozadí
+        statusBarIconBrightness:
+            Brightness.light, // Ikony a text status baru budou tmavé
+      ),
+    );
 
-  SystemChrome.setSystemUIOverlayStyle(
-    SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent, // Průhledné pozadí
-      statusBarIconBrightness: Brightness.light, // Ikony a text status baru budou tmavé
-    ),
-  );
-  
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-           SizedBox(height: 50,),
+            SizedBox(
+              height: 30,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('assets/logocarmio.png', width: 120,),
+              ],
+            ),
+            SizedBox(
+              height: 30,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
                   'Akce v okolí',
                   style: TextStyle(
-                    fontFamily: 'Inter',
                     fontWeight: FontWeight.bold,
                     fontSize: 24,
+                    color: colorScheme.onPrimary,
+                  ),
+                ),
+                Text(
+                  'Zobrazit vše...',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
                     color: colorScheme.onPrimary,
                   ),
                 ),
@@ -48,13 +66,18 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             const SizedBox(height: 10),
             StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection('events').snapshots(),
+              stream:
+                  FirebaseFirestore.instance.collection('events').snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return  Center(child: Text('Žádné akce k dispozici.', style: TextStyle(color: colorScheme.onPrimary),));
+                  return Center(
+                      child: Text(
+                    'Žádné akce k dispozici.',
+                    style: TextStyle(color: colorScheme.onPrimary),
+                  ));
                 }
 
                 final events = snapshot.data!.docs;
@@ -69,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     );
                   }).toList(),
                   options: CarouselOptions(
-                    height: 200,
+                    height: 168,
                     enlargeCenterPage: true,
                     enableInfiniteScroll: true,
                     autoPlay: true,
@@ -84,11 +107,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const CreateEventPage(),
+                      builder: (context) => CreateEventPage(),
                     ),
                   );
                 },
-                icon:  Icon(Icons.add,color: colorScheme.onPrimary,),
+                icon: Icon(
+                  Icons.add,
+                  color: colorScheme.onPrimary,
+                ),
                 label: const Text('Vytvořit akci'),
                 style: ElevatedButton.styleFrom(
                   foregroundColor: colorScheme.onPrimary,
@@ -122,7 +148,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   _buildServiceCard('Fotograf', 'assets/fotogtaf.png', () {}),
                   _buildServiceCard('Detailing', 'assets/detailing.png', () {}),
                   _buildServiceCard('Okresky', 'assets/okresky.png', () {}),
-                  _buildServiceCard('Benzín a nafta', 'assets/benzinky.png', () {}),
+                  _buildServiceCard(
+                      'Ceny benzínu', 'assets/benzinky.png', () {}),
                   _buildServiceCard('Marketplace', 'assets/oko.png', () {}),
                 ],
               ),
@@ -134,77 +161,120 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildEventCard({
-    required String title,
-    required String location,
-    required String date,
-    required String type,
-  }) {
-    
-    final Map<String, IconData> typeIcons = {
-    'Sraz': Icons.people_alt,
-    'Závody': Icons.speed,
-    'Drifty': Icons.directions_car,
-    'Jízda okreskami': Icons.terrain,
-    'Neznámý typ': Icons.help_outline, // Výchozí ikona
+  required String title,
+  required String location,
+  required String date,
+  required String type,
+}) {
+  final Map<String, String> typeIcons = {
+    'Sraz': 'assets/carmeet.png',
+    'Závody': 'assets/race.png',
+    'Drifty': 'assets/drifting.png',
+    'Okresky': 'assets/road.png',
+    'Neznámý typ': 'assets/question.png', // Default icon
   };
 
-  // Vyber ikonu podle typu
-  IconData selectedIcon = typeIcons[type] ?? Icons.help_outline;
+  // Select the icon based on type
+  String selectedIcon = typeIcons[type] ?? 'assets/question.png';
 
-    return Card(
-     margin: const EdgeInsets.only(bottom: 20),
-      color: colorScheme.primary,
-      
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: colorScheme.onPrimary),
-                ),
-                const SizedBox(height: 5),
-                Row(
-                  children: [
-                     Icon(Icons.place_outlined, size: 16, color: colorScheme.onPrimary),
-                    const SizedBox(width: 5),
-                    Text(location, style: TextStyle(color: colorScheme.onPrimary),),
-                  ],
-                ),
-                const SizedBox(height: 5),
-                Row(
-                  children: [
-                     Icon(Icons.date_range, size: 16, color: colorScheme.onPrimary),
-                    const SizedBox(width: 5),
-                    Text(date, style: TextStyle(color: colorScheme.onPrimary),),
-                  ],
-                ),
-                const SizedBox(height: 5),
-                Row(
-                  children: [
-                     Icon(Icons.category, size: 16, color: colorScheme.onPrimary),
-                    const SizedBox(width: 5),
-                    Text(type, style: TextStyle(color: colorScheme.onPrimary),),
-                    
-                  ],
-                  
-                ),
-              ],
-            ),
-            Icon(selectedIcon, size: 50,
-            color: const Color.fromRGBO(231, 144, 246, 1),
-)
-          ],
+  return GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => EventDetails(
+            title: title,
+            location: location,
+            date: date,
+            type: type,
+          ),
         ),
-        
+      );
+    },
+    child: Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            colorScheme.primary,
+            colorScheme.secondary,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(10),
       ),
-    );
-  }
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 0),
+        color: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      Icon(Icons.place_outlined,
+                          size: 16, color: colorScheme.onPrimary),
+                      const SizedBox(width: 5),
+                      Text(location,
+                          style: TextStyle(color: colorScheme.onPrimary)),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      Icon(Icons.date_range,
+                          size: 16, color: colorScheme.onPrimary),
+                      const SizedBox(width: 5),
+                      Text(date,
+                          style: TextStyle(color: colorScheme.onPrimary)),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      Icon(Icons.category,
+                          size: 16, color: colorScheme.onPrimary),
+                      const SizedBox(width: 5),
+                      Text(type,
+                          style: TextStyle(color: colorScheme.onPrimary)),
+                    ],
+                  ),
+                ],
+              ),
+              // Use the PNG asset icon
+              Image.asset(
+                selectedIcon,
+                width: 50,
+                height: 50,
+                fit: BoxFit.contain,
+                color: colorScheme.onPrimary,
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
 
   Widget _buildServiceCard(String title, String assetPath, VoidCallback onTap) {
     return GestureDetector(
@@ -214,9 +284,10 @@ class _MyHomePageState extends State<MyHomePage> {
           image: DecorationImage(
             image: AssetImage(assetPath),
             fit: BoxFit.cover,
-            opacity: 0.3,
+            opacity: 0.2,
           ),
-          color: Colors.purple,
+          color: colorScheme.primary,
+
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
