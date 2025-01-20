@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.example.drivers"
-    compileSdk = flutter.compileSdkVersion
+    compileSdkVersion 34
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -21,13 +21,11 @@ android {
         jvmTarget = "17"
     }
 
-    defaultConfig {
-        applicationId = "com.example.carmio"
-        minSdk = 21 // Firebase vyžaduje minSdk 21
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
-         multiDexEnabled true
+     defaultConfig {
+        applicationId "com.example.carmio"
+        minSdkVersion 21
+        targetSdkVersion 34
+        multiDexEnabled true
     }
 
     buildTypes {
