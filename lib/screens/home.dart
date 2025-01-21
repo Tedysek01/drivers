@@ -26,6 +26,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
+      
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
