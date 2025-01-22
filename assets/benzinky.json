@@ -1,0 +1,17 @@
+[
+    {
+      "name": "Benzina",
+      "address": "Praha, Ulice 1",
+      "diesel_price": "36,70",
+      "petrol_price": "37,10",
+      "details": "Non-stop, Wi-Fi, WC"
+    },
+    {
+      "name": "Shell",
+      "address": "Brno, Ulice 2",
+      "diesel_price": "35,90",
+      "petrol_price": "36,50",
+      "details": "Myčka, Občerstvení"
+    }
+  ]
+  

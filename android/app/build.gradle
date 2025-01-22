@@ -3,13 +3,12 @@ plugins {
     id "kotlin-android"
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
-    // Opravujeme verzi Firebase pluginu
-    id 'com.google.gms.google-services'
+    id "com.google.gms.google-services" // Firebase plugin
 }
 
 android {
     namespace = "com.example.drivers"
-    compileSdkVersion 34
+    compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -21,15 +20,18 @@ android {
         jvmTarget = "17"
     }
 
-     defaultConfig {
-        applicationId "com.example.carmio"
-        minSdkVersion 21
-        targetSdkVersion 34
-        multiDexEnabled true
+    defaultConfig {
+        applicationId = "com.example.carmio"
+        minSdk = 23 // Firebase vyžaduje minSdk 21
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+         multiDexEnabled true
     }
 
     buildTypes {
         release {
+            // Ensure to use a proper signing configuration for production
             signingConfig = signingConfigs.debug
         }
     }
@@ -40,10 +42,9 @@ flutter {
 }
 
 dependencies {
-    // Přidání Firebase BOM (Bill of Materials)
-    implementation platform('com.google.firebase:firebase-bom:32.2.2') // Zajišťuje správnou verzi závislostí
-    implementation 'com.google.firebase:firebase-analytics' // Firebase Analytics (volitelné)
+    // Firebase BOM (Bill of Materials) for version alignment
+    implementation platform('com.google.firebase:firebase-bom:33.8.0')
+    implementation 'com.google.firebase:firebase-analytics' // Optional Firebase Analytics
     implementation 'com.google.firebase:firebase-firestore' // Cloud Firestore
     implementation 'com.android.support:multidex:2.0.1'
-
 }

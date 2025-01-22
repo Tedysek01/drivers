@@ -7,13 +7,13 @@ class EventDetails extends StatefulWidget {
   final String date;
   final String type;
 
-  EventDetails({
-    Key? key,
+  const EventDetails({
+    super.key,
     required this.title,
     required this.location,
     required this.date,
     required this.type,
-  }) : super(key: key);
+  });
 
   @override
   State<EventDetails> createState() => _EventDetailsState();
@@ -60,7 +60,7 @@ class _EventDetailsState extends State<EventDetails> {
             const SizedBox(height: 15),
             Text(
               widget.title,
-              style: TextStyle( 
+              style: TextStyle(
                 color: colorScheme.primary,
                 fontSize: 24,
                 fontWeight: FontWeight.bold,

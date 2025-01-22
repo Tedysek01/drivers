@@ -1,6 +1,6 @@
 import 'package:drivers/screens/account.dart';
 import 'package:drivers/screens/home.dart'; // This is your home page
-import 'package:drivers/screens/login.dart'; // Assuming this is your account/login screen
+// Assuming this is your account/login screen
 import 'package:drivers/screens/mapscreen.dart';
 import 'package:drivers/screens/notificationscreen.dart';
 import 'package:drivers/style/barvy.dart';
@@ -17,6 +17,8 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -29,6 +31,8 @@ class MyApp extends StatelessWidget {
 }
 
 class MainApp extends StatefulWidget {
+  const MainApp({super.key});
+
   @override
   _MainAppState createState() => _MainAppState();
 }

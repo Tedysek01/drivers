@@ -1,3 +1,4 @@
+import 'package:drivers/screens/cenyphm_screen.dart';
 import 'package:drivers/screens/create_event.dart';
 import 'package:drivers/screens/event_details.dart';
 import 'package:drivers/style/barvy.dart';
@@ -26,7 +27,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
-      
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -38,7 +38,10 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset('assets/logocarmio.png', width: 120,),
+                Image.asset(
+                  'assets/logocarmio.png',
+                  width: 120,
+                ),
               ],
             ),
             SizedBox(
@@ -150,8 +153,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   _buildServiceCard('Fotograf', 'assets/fotogtaf.png', () {}),
                   _buildServiceCard('Detailing', 'assets/detailing.png', () {}),
                   _buildServiceCard('Okresky', 'assets/okresky.png', () {}),
-                  _buildServiceCard(
-                      'Ceny benzínu', 'assets/benzinky.png', () {}),
+                  _buildServiceCard('Ceny benzínu', 'assets/benzinky.png', () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PetrolPricesScreen(),
+                      ),
+                    );
+                  }),
                   _buildServiceCard('Marketplace', 'assets/oko.png', () {}),
                 ],
               ),
@@ -163,120 +172,119 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildEventCard({
-  required String title,
-  required String location,
-  required String date,
-  required String type,
-}) {
-  final Map<String, String> typeIcons = {
-    'Sraz': 'assets/carmeet.png',
-    'Závody': 'assets/race.png',
-    'Drifty': 'assets/drifting.png',
-    'Okresky': 'assets/road.png',
-    'Neznámý typ': 'assets/question.png', // Default icon
-  };
+    required String title,
+    required String location,
+    required String date,
+    required String type,
+  }) {
+    final Map<String, String> typeIcons = {
+      'Sraz': 'assets/carmeet.png',
+      'Závody': 'assets/race.png',
+      'Drifty': 'assets/drifting.png',
+      'Okresky': 'assets/road.png',
+      'Neznámý typ': 'assets/question.png', // Default icon
+    };
 
-  // Select the icon based on type
-  String selectedIcon = typeIcons[type] ?? 'assets/question.png';
+    // Select the icon based on type
+    String selectedIcon = typeIcons[type] ?? 'assets/question.png';
 
-  return GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => EventDetails(
-            title: title,
-            location: location,
-            date: date,
-            type: type,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EventDetails(
+              title: title,
+              location: location,
+              date: date,
+              type: type,
+            ),
           ),
-        ),
-      );
-    },
-    child: Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            colorScheme.primary,
-            colorScheme.secondary,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Card(
-        margin: const EdgeInsets.only(bottom: 0),
-        color: Colors.transparent,
-        shape: RoundedRectangleBorder(
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              colorScheme.primary,
+              colorScheme.secondary,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: colorScheme.onPrimary,
+        child: Card(
+          margin: const EdgeInsets.only(bottom: 0),
+          color: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.onPrimary,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Icon(Icons.place_outlined,
-                          size: 16, color: colorScheme.onPrimary),
-                      const SizedBox(width: 5),
-                      Text(location,
-                          style: TextStyle(color: colorScheme.onPrimary)),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Icon(Icons.date_range,
-                          size: 16, color: colorScheme.onPrimary),
-                      const SizedBox(width: 5),
-                      Text(date,
-                          style: TextStyle(color: colorScheme.onPrimary)),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Icon(Icons.category,
-                          size: 16, color: colorScheme.onPrimary),
-                      const SizedBox(width: 5),
-                      Text(type,
-                          style: TextStyle(color: colorScheme.onPrimary)),
-                    ],
-                  ),
-                ],
-              ),
-              // Use the PNG asset icon
-              Image.asset(
-                selectedIcon,
-                width: 50,
-                height: 50,
-                fit: BoxFit.contain,
-                color: colorScheme.onPrimary,
-              ),
-            ],
+                    const SizedBox(height: 5),
+                    Row(
+                      children: [
+                        Icon(Icons.place_outlined,
+                            size: 16, color: colorScheme.onPrimary),
+                        const SizedBox(width: 5),
+                        Text(location,
+                            style: TextStyle(color: colorScheme.onPrimary)),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Row(
+                      children: [
+                        Icon(Icons.date_range,
+                            size: 16, color: colorScheme.onPrimary),
+                        const SizedBox(width: 5),
+                        Text(date,
+                            style: TextStyle(color: colorScheme.onPrimary)),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Row(
+                      children: [
+                        Icon(Icons.category,
+                            size: 16, color: colorScheme.onPrimary),
+                        const SizedBox(width: 5),
+                        Text(type,
+                            style: TextStyle(color: colorScheme.onPrimary)),
+                      ],
+                    ),
+                  ],
+                ),
+                // Use the PNG asset icon
+                Image.asset(
+                  selectedIcon,
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.contain,
+                  color: colorScheme.onPrimary,
+                ),
+              ],
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   Widget _buildServiceCard(String title, String assetPath, VoidCallback onTap) {
     return GestureDetector(
@@ -289,7 +297,6 @@ class _MyHomePageState extends State<MyHomePage> {
             opacity: 0.2,
           ),
           color: colorScheme.primary,
-
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
