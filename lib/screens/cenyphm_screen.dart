@@ -18,11 +18,29 @@ class _PetrolPricesScreenState extends State<PetrolPricesScreen> {
   }
 
   Future<void> loadStations() async {
-    final String response = await rootBundle.loadString('assets/benzinky.json');
-    final data = json.decode(response) as List;
-    setState(() {
-      stations = data.map((e) => PetrolStation.fromJson(e)).toList();
-    });
+    try {
+      print("Začínám načítat JSON...");
+      final String response =
+          await rootBundle.loadString('assets/stations_processed.json');
+      print("JSON úspěšně načten!");
+
+      final List<dynamic> data = json.decode(response);
+      print("JSON dekódován, počet položek: ${data.length}");
+
+      setState(() {
+        stations =
+            data.where((e) => e['lat'] != null && e['lon'] != null).map((e) {
+          return PetrolStation(
+            name: e['name'] ?? 'Neznámá benzínka',
+            lat: e['lat'].toDouble(),
+            lon: e['lon'].toDouble(),
+          );
+        }).toList();
+        print("Benzínky načteny, počet: ${stations.length}");
+      });
+    } catch (error) {
+      print("Chyba při načítání JSON: $error");
+    }
   }
 
   @override
@@ -44,7 +62,7 @@ class _PetrolPricesScreenState extends State<PetrolPricesScreen> {
                   child: ListTile(
                     title: Text(station.name),
                     subtitle: Text(
-                        '${station.address}\nNafta: ${station.dieselPrice} Kč | Benzín: ${station.petrolPrice} Kč'),
+                        'Lat: ${station.lat}, Lon: ${station.lon}\nAdresa: ${station.address ?? 'Není k dispozici'}'),
                     isThreeLine: true,
                     onTap: () {
                       Navigator.push(
@@ -80,16 +98,24 @@ class PetrolStationDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Adresa: ${station.address}', style: TextStyle(fontSize: 18)),
+            Text(
+              'Lat: ${station.lat}, Lon: ${station.lon}',
+              style: TextStyle(fontSize: 18),
+            ),
             const SizedBox(height: 8),
-            Text('Nafta: ${station.dieselPrice} Kč',
-                style: TextStyle(fontSize: 18)),
-            Text('Benzín: ${station.petrolPrice} Kč',
-                style: TextStyle(fontSize: 18)),
+            Text(
+              'Adresa: ${station.address ?? 'Není k dispozici'}',
+              style: TextStyle(fontSize: 18),
+            ),
             const SizedBox(height: 16),
-            Text('Detaily:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            Text(station.details, style: TextStyle(fontSize: 16)),
+            Text(
+              'Nafta: ${station.dieselPrice ?? 'Neuvedeno'} Kč',
+              style: TextStyle(fontSize: 18),
+            ),
+            Text(
+              'Benzín: ${station.petrolPrice ?? 'Neuvedeno'} Kč',
+              style: TextStyle(fontSize: 18),
+            ),
           ],
         ),
       ),
