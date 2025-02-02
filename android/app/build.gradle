@@ -34,6 +34,7 @@ android {
             // Ensure to use a proper signing configuration for production
             signingConfig = signingConfigs.debug
         }
+
     }
 }
 

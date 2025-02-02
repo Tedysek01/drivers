@@ -169,7 +169,9 @@ class _RegisterStep3State extends State<RegisterStep3> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const MyHomePage(),
+                      builder: (context) => const MyHomePage(
+                        stations: [],
+                      ),
                     ),
                   );
                 },

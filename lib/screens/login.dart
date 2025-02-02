@@ -33,7 +33,10 @@ class _LoginState extends State<Login> {
         // Navigate to the home page after successful login
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const MyHomePage()),
+          MaterialPageRoute(
+              builder: (context) => const MyHomePage(
+                    stations: [],
+                  )),
         );
       } on FirebaseAuthException catch (e) {
         String errorMessage = 'Chyba při přihlášení';
@@ -184,8 +187,7 @@ class _LoginState extends State<Login> {
                             : Text(
                                 'Přihlásit se',
                                 style: TextStyle(
-                                    fontSize: 18,
-                                    color: colorScheme.onPrimary),
+                                    fontSize: 18, color: colorScheme.onPrimary),
                               ),
                       ),
                     ),

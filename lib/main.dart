@@ -1,9 +1,12 @@
 import 'package:drivers/screens/account.dart';
 import 'package:drivers/screens/home.dart'; // This is your home page
+import 'package:drivers/screens/loading_screen.dart';
 // Assuming this is your account/login screen
 import 'package:drivers/screens/mapscreen.dart';
+import 'package:drivers/screens/messagescreen.dart';
 import 'package:drivers/screens/notificationscreen.dart';
 import 'package:drivers/style/barvy.dart';
+import 'package:drivers/upload_stations.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -25,7 +28,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Carmio App',
       theme: ThemeData(primarySwatch: Colors.orange),
-      home: MainApp(), // MainApp includes the BottomNavigationBar
+      home: LoadingScreen(), // MainApp includes the BottomNavigationBar
     );
   }
 }
@@ -42,9 +45,12 @@ class _MainAppState extends State<MainApp> {
 
   // List of screens for navigation
   final List<Widget> _screens = [
-    MyHomePage(), // Home screen
+    MyHomePage(
+      stations: [],
+    ), // Home screen
     NotificationsScreen(), // Notifications screen
     MapScreen(), //Map screen
+    MessagesScreen(),
     AccountScreen(), // Account screen
   ];
 
@@ -57,27 +63,41 @@ class _MainAppState extends State<MainApp> {
         backgroundColor: colorScheme.secondary,
         selectedItemColor: colorScheme.primary,
         unselectedItemColor: colorScheme.onPrimary,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
         currentIndex: _currentIndex,
         onTap: (index) {
           setState(() {
             _currentIndex = index;
           });
         },
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            activeIcon: Image.asset(
+              'assets/home.png',
+              color: colorScheme.primary,
+            ),
+            icon: Image.asset('assets/home.png'),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
+            activeIcon: Image.asset(
+              'assets/hledat.png',
+              color: colorScheme.primary,
+            ),
+            icon: Image.asset('assets/hledat.png'),
             label: 'Notifications',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add_location_alt_outlined),
+            icon: Image.asset('assets/pridat.png'),
             label: 'Add',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Image.asset('assets/zpravy.png'),
+            label: 'Account',
+          ),
+          BottomNavigationBarItem(
+            icon: Image.asset('assets/profil.png'),
             label: 'Account',
           ),
         ],
