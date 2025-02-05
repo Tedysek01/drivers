@@ -369,7 +369,7 @@ class _FuelPriceCardState extends State<_FuelPriceCard> {
               station.lon,
             ) /
             1000; // Convert meters to km
-        return distance <= 20;
+        return distance <= 10;
       }).toList();
 
       // Find the cheapest petrol price

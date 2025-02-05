@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:drivers/main.dart';
 import 'package:drivers/style/barvy.dart';
 import 'package:flutter/material.dart';
 import 'package:drivers/screens/home.dart';
@@ -49,7 +50,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => MyHomePage(stations: stations),
+          builder: (context) => MainApp(),
         ),
       );
     } catch (e) {

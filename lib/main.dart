@@ -1,8 +1,9 @@
 import 'package:drivers/screens/account.dart';
+import 'package:drivers/screens/create_popup.dart';
 import 'package:drivers/screens/home.dart'; // This is your home page
 import 'package:drivers/screens/loading_screen.dart';
 // Assuming this is your account/login screen
-import 'package:drivers/screens/mapscreen.dart';
+import 'package:drivers/screens/explore.dart';
 import 'package:drivers/screens/messagescreen.dart';
 import 'package:drivers/screens/notificationscreen.dart';
 import 'package:drivers/style/barvy.dart';
@@ -12,6 +13,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 void main() async {
+  print('Secondary: ${colorScheme.secondary}, OnPrimary: ${colorScheme.onPrimary}');
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -27,7 +29,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Carmio App',
-      theme: ThemeData(primarySwatch: Colors.orange),
+      theme: ThemeData(useMaterial3: true
+          ,colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange)),
+
       home: LoadingScreen(), // MainApp includes the BottomNavigationBar
     );
   }
@@ -45,13 +49,11 @@ class _MainAppState extends State<MainApp> {
 
   // List of screens for navigation
   final List<Widget> _screens = [
-    MyHomePage(
-      stations: [],
-    ), // Home screen
-    NotificationsScreen(), // Notifications screen
-    MapScreen(), //Map screen
+    MyHomePage(stations: []),
+    Explore(),
+    Container(), // Placeholder, since CreatePopup is not a screen
     MessagesScreen(),
-    AccountScreen(), // Account screen
+    AccountScreen(),
   ];
 
   @override
@@ -65,12 +67,18 @@ class _MainAppState extends State<MainApp> {
         unselectedItemColor: colorScheme.onPrimary,
         showSelectedLabels: false,
         showUnselectedLabels: false,
+
         currentIndex: _currentIndex,
         onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
+          if (index == 2) {
+            CreatePopup.show(context); // Open the popup when the user clicks "+"
+          } else {
+            setState(() {
+              _currentIndex = index; // Navigate to other screens
+            });
+          }
         },
+
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             activeIcon: Image.asset(

@@ -44,7 +44,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 label: 'Název akce',
                 onChanged: (value) => eventName = value,
                 validator: (value) =>
-                    value!.isEmpty ? 'Zadejte název akce' : null,
+                value!.isEmpty ? 'Zadejte název akce' : null,
               ),
               const SizedBox(height: 20),
 
@@ -53,65 +53,65 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 label: 'Místo konání',
                 onChanged: (value) => eventLocation = value,
                 validator: (value) =>
-                    value!.isEmpty ? 'Zadejte místo konání' : null,
+                value!.isEmpty ? 'Zadejte místo konání' : null,
               ),
               const SizedBox(height: 20),
 
               // Date and Time Picker
-GestureDetector(
-  onTap: () async {
-    DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
+              GestureDetector(
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2100),
+                  );
 
-    if (pickedDate != null) {
-      TimeOfDay? pickedTime = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.now(),
-      );
+                  if (pickedDate != null) {
+                    TimeOfDay? pickedTime = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.now(),
+                    );
 
-      if (pickedTime != null) {
-        setState(() {
-          eventDate = DateTime(
-            pickedDate.year,
-            pickedDate.month,
-            pickedDate.day,
-            pickedTime.hour,
-            pickedTime.minute,
-          );
-        });
-      }
-    }
-  },
-  child: Container(
-    decoration: BoxDecoration(
-      color: colorScheme.secondary,
-      borderRadius: BorderRadius.circular(10),
-    ),
-    padding: const EdgeInsets.all(15),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          eventDate != null
-              ? DateFormat('dd.MM.yyyy HH:mm').format(eventDate!)
-              : 'Zvolte datum a čas',
-          style: TextStyle(
-            color: colorScheme.onPrimary,
-            fontSize: 16,
-          ),
-        ),
-        const Icon(
-          Icons.calendar_today,
-          color: Colors.white,
-        ),
-      ],
-    ),
-  ),
-),
+                    if (pickedTime != null) {
+                      setState(() {
+                        eventDate = DateTime(
+                          pickedDate.year,
+                          pickedDate.month,
+                          pickedDate.day,
+                          pickedTime.hour,
+                          pickedTime.minute,
+                        );
+                      });
+                    }
+                  }
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: colorScheme.secondary,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.all(15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        eventDate != null
+                            ? DateFormat('dd.MM.yyyy HH:mm').format(eventDate!)
+                            : 'Zvolte datum a čas',
+                        style: TextStyle(
+                          color: colorScheme.onPrimary,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const Icon(
+                        Icons.calendar_today,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
 
               const SizedBox(height: 20),
 
@@ -121,10 +121,10 @@ GestureDetector(
                 dropdownColor: colorScheme.secondary,
                 items: eventTypes
                     .map((type) => DropdownMenuItem(
-                          value: type,
-                          child: Text(type,
-                              style: TextStyle(color: colorScheme.onPrimary)),
-                        ))
+                  value: type,
+                  child: Text(type,
+                      style: TextStyle(color: colorScheme.onPrimary)),
+                ))
                     .toList(),
                 onChanged: (value) => eventType = value!,
                 validator: (value) => value == null ? 'Zvolte typ akce' : null,
@@ -142,38 +142,38 @@ GestureDetector(
 
               // Submit Button
               ElevatedButton(
-  onPressed: () async {
-    if (_formKey.currentState!.validate()) {
-      try {
-        await FirebaseFirestore.instance.collection('events').add({
-          'name': eventName,
-          'location': eventLocation,
-          'date': eventDate != null ? DateFormat('dd.MM.yyyy HH:mm').format(eventDate!) : null, // Save formatted date
-          'type': eventType,
-          'description': eventDescription,
-          'createdAt': DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()), // Optional: Format createdAt as well
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Akce úspěšně vytvořena!')),
-        );
-        Navigator.pop(context);
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Chyba při vytváření akce: $e')),
-        );
-      }
-    }
-  },
-  style: ElevatedButton.styleFrom(
-    foregroundColor: colorScheme.onPrimary,
-    backgroundColor: colorScheme.primary,
-    minimumSize: const Size(200, 50),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10),
-    ),
-  ),
-  child: const Text('Vytvořit akci', style: TextStyle(fontSize: 18)),
-),
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    try {
+                      await FirebaseFirestore.instance.collection('events').add({
+                        'name': eventName,
+                        'location': eventLocation,
+                        'date': eventDate != null ? DateFormat('dd.MM.yyyy HH:mm').format(eventDate!) : null, // Save formatted date
+                        'type': eventType,
+                        'description': eventDescription,
+                        'createdAt': DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()), // Optional: Format createdAt as well
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Akce úspěšně vytvořena!')),
+                      );
+                      Navigator.pop(context);
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Chyba při vytváření akce: $e')),
+                      );
+                    }
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: colorScheme.onPrimary,
+                  backgroundColor: colorScheme.primary,
+                  minimumSize: const Size(200, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: const Text('Vytvořit akci', style: TextStyle(fontSize: 18)),
+              ),
 
             ],
           ),
