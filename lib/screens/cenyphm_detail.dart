@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:drivers/benzinkaclass.dart';
 
-
 class PetrolStationDetailScreen extends StatelessWidget {
   final PetrolStation station;
 
@@ -81,11 +80,13 @@ class PetrolStationDetailScreen extends StatelessWidget {
                       const SizedBox(height: 8),
                       Text(
                         'Nafta: ${station.dieselPrice ?? 'Neuvedeno'} Kč',
-                        style: TextStyle(fontSize: 18, color: colorScheme.onSurface),
+                        style: TextStyle(
+                            fontSize: 18, color: colorScheme.onSurface),
                       ),
                       Text(
                         'Benzín: ${station.petrolPrice ?? 'Neuvedeno'} Kč',
-                        style: TextStyle(fontSize: 18, color: colorScheme.onSurface),
+                        style: TextStyle(
+                            fontSize: 18, color: colorScheme.onSurface),
                       ),
                     ],
                   ),
@@ -102,7 +103,8 @@ class PetrolStationDetailScreen extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: colorScheme.primary,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 10),
                     ),
                     child: Text(
                       'Upravit',

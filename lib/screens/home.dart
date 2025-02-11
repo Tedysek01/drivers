@@ -3,8 +3,10 @@ import 'package:drivers/style/barvy.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../benzinkaclass.dart';
+import '../data_provider.dart';
 import 'cenyphm_detail.dart';
 import 'cenyphm_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,7 +15,7 @@ import 'package:drivers/screens/cenyphm_detail.dart'; // Import PetrolStationDet
 import 'package:drivers/benzinkaclass.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
+import 'package:drivers/data_provider.dart';
 class MyHomePage extends StatelessWidget {
   final List<PetrolStation> stations; // Accept stations as a parameter
 
@@ -22,6 +24,12 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dataProvider = Provider.of<DataProvider>(context);
+
+    if (!dataProvider.isLoaded) {
+      return Center(child: CircularProgressIndicator());
+    }
+
     return Scaffold(
       backgroundColor: colorScheme.surface,
       body: SingleChildScrollView(
@@ -332,9 +340,107 @@ class _FuelPriceCardState extends State<_FuelPriceCard> {
   double? distanceToUser; // Store distance for display
 
   @override
-  void initState() {
-    super.initState();
-    fetchCheapestStation();
+  Widget build(BuildContext context) {
+    final dataProvider = Provider.of<DataProvider>(context);
+
+    if (!dataProvider.isLoaded) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    final PetrolStation? station = dataProvider.cheapestStation;
+
+    if (station == null) {
+      return Center(child: Text("Žádná dostupná benzínka v okolí."));
+    }
+
+    // Použij FutureBuilder pro adresu
+    return FutureBuilder(
+      future: dataProvider.fetchAddress(station), // Zavoláme fetchAddress
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator()); // Načítání adresy
+        }
+
+        if (snapshot.hasError) {
+          return Center(child: Text("Chyba při načítání adresy.")); // Chyba při načtení
+        }
+
+        // Adresa je načtena, zobrazíme UI
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    PetrolStationDetailScreen(station: station),
+              ),
+            );
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: colorScheme.secondary,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.local_gas_station, color: colorScheme.onSurface, size: 30),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        station.name,
+                        style: TextStyle(
+                          color: colorScheme.onSurface,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        station.address ?? "Načítání adresy...",
+                        style: TextStyle(color: colorScheme.onSurface.withOpacity(0.7), fontSize: 14),
+                      ),
+                      Row(
+                        children: [
+                          Image.asset('assets/navigation.png', height: 16, color: colorScheme.primary),
+                          const SizedBox(width: 4),
+                          Text(
+                            dataProvider.distanceToUser != null
+                                ? "${dataProvider.distanceToUser!.toStringAsFixed(1)} km"
+                                : "Načítání...",
+                            style: TextStyle(color: colorScheme.onSurface.withOpacity(0.7), fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text('Benzín:', style: TextStyle(color: colorScheme.onSurface.withOpacity(0.7), fontSize: 14)),
+                    Text(
+                      station.petrolPrice != null ? '${station.petrolPrice} Kč' : '--',
+                      style: TextStyle(color: colorScheme.onSurface, fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    const SizedBox(height: 8),
+                    Text('Nafta:', style: TextStyle(color: colorScheme.onSurface.withOpacity(0.7), fontSize: 14)),
+                    Text(
+                      station.dieselPrice != null ? '${station.dieselPrice} Kč' : '--',
+                      style: TextStyle(color: colorScheme.onSurface, fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Future<void> fetchCheapestStation() async {
@@ -421,6 +527,7 @@ class _FuelPriceCardState extends State<_FuelPriceCard> {
       }
     } catch (e) {
       print("Chyba při načítání adresy: $e");
+
     }
   }
 
@@ -457,132 +564,4 @@ class _FuelPriceCardState extends State<_FuelPriceCard> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (cheapestStation == null) {
-      return Container(
-        padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          color: colorScheme.secondary,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
-
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                PetrolStationDetailScreen(station: cheapestStation!),
-          ),
-        );
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: colorScheme.secondary,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(
-              Icons.local_gas_station,
-              color: colorScheme.onSurface,
-              size: 30,
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    cheapestStation!.name,
-                    style: TextStyle(
-                      color: colorScheme.onSurface,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    cheapestStation!.address ?? "Načítání adresy...",
-                    style: TextStyle(
-                      color: colorScheme.onSurface.withOpacity(0.7),
-                      fontSize: 14,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Image.asset(
-                        'assets/navigation.png', // 🧭 Navigation Icon
-                        height: 16,
-                        color: colorScheme.primary,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        distanceToUser != null
-                            ? "${distanceToUser!.toStringAsFixed(1)} km"
-                            : "Načítání...",
-                        style: TextStyle(
-                          color: colorScheme.onSurface.withOpacity(0.7),
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  'Benzín:',
-                  style: TextStyle(
-                    color: colorScheme.onSurface.withOpacity(0.7),
-                    fontSize: 14,
-                  ),
-                ),
-                Text(
-                  cheapestStation!.petrolPrice != null
-                      ? '${cheapestStation!.petrolPrice} Kč'
-                      : '--',
-                  style: TextStyle(
-                    color: colorScheme.onSurface,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Nafta:',
-                  style: TextStyle(
-                    color: colorScheme.onSurface.withOpacity(0.7),
-                    fontSize: 14,
-                  ),
-                ),
-                Text(
-                  cheapestStation!.dieselPrice != null
-                      ? '${cheapestStation!.dieselPrice} Kč'
-                      : '--',
-                  style: TextStyle(
-                    color: colorScheme.onSurface,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
   }
-}

@@ -10,15 +10,24 @@ import 'package:drivers/style/barvy.dart';
 import 'package:drivers/upload_stations.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'data_provider.dart';
 import 'firebase_options.dart';
 
 void main() async {
-  print('Secondary: ${colorScheme.secondary}, OnPrimary: ${colorScheme.onPrimary}');
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp());
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => DataProvider()..loadData()),
+      ],
+      child: MyApp(), // Zde už předáváš správně child
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -29,8 +38,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Carmio App',
-      theme: ThemeData(useMaterial3: true
-          ,colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange)),
+      theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange)),
 
       home: LoadingScreen(), // MainApp includes the BottomNavigationBar
     );
@@ -67,18 +77,17 @@ class _MainAppState extends State<MainApp> {
         unselectedItemColor: colorScheme.onPrimary,
         showSelectedLabels: false,
         showUnselectedLabels: false,
-
         currentIndex: _currentIndex,
         onTap: (index) {
           if (index == 2) {
-            CreatePopup.show(context); // Open the popup when the user clicks "+"
+            CreatePopup.show(
+                context); // Open the popup when the user clicks "+"
           } else {
             setState(() {
               _currentIndex = index; // Navigate to other screens
             });
           }
         },
-
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             activeIcon: Image.asset(

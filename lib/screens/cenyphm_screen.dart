@@ -10,7 +10,6 @@ import 'package:http/http.dart' as http;
 import '../style/barvy.dart';
 import 'cenyphm_detail.dart';
 
-
 String formatAddress(String? fullAddress) {
   if (fullAddress == null || fullAddress.isEmpty) return 'Načítání adresy...';
 
@@ -24,8 +23,6 @@ String formatAddress(String? fullAddress) {
 
   return fullAddress;
 }
-
-
 
 class PetrolPricesScreen extends StatefulWidget {
   @override
@@ -45,37 +42,42 @@ class _PetrolPricesScreenState extends State<PetrolPricesScreen> {
     fetchNearestStations();
   }
 
-
-
   Future<void> loadStations() async {
     try {
       // Načtení dat z Firestore
-      final snapshot = await FirebaseFirestore.instance.collection('stations').get();
+      final snapshot =
+          await FirebaseFirestore.instance.collection('stations').get();
 
       // Převod dokumentů na seznam objektů PetrolStation
       setState(() {
-        stations = snapshot.docs.map((doc) {
-          final data = doc.data();
-          try {
-            return PetrolStation(
-              name: data['name'],
-              lat: data['lat'] is double ? data['lat'] : double.parse(data['lat']),
-              lon: data['lon'] is double ? data['lon'] : double.parse(data['lon']),
-              dieselPrice: data['dieselPrice'],
-              petrolPrice: data['petrolPrice'],
-              address: data['address'],
-              updatedBy: data['updatedBy'],
-              updatedAt: data['updatedAt'] != null
-                  ? (data['updatedAt'] as Timestamp).toDate()
-                  : null,
-              id: doc.id,
-            );
-          } catch (e) {
-            print('Chyba při zpracování dokumentu: ${doc.id}, chyba: $e');
-            return null; // Vrátí null pro problémové dokumenty
-          }
-        }).whereType<PetrolStation>().toList();
-
+        stations = snapshot.docs
+            .map((doc) {
+              final data = doc.data();
+              try {
+                return PetrolStation(
+                  name: data['name'],
+                  lat: data['lat'] is double
+                      ? data['lat']
+                      : double.parse(data['lat']),
+                  lon: data['lon'] is double
+                      ? data['lon']
+                      : double.parse(data['lon']),
+                  dieselPrice: data['dieselPrice'],
+                  petrolPrice: data['petrolPrice'],
+                  address: data['address'],
+                  updatedBy: data['updatedBy'],
+                  updatedAt: data['updatedAt'] != null
+                      ? (data['updatedAt'] as Timestamp).toDate()
+                      : null,
+                  id: doc.id,
+                );
+              } catch (e) {
+                print('Chyba při zpracování dokumentu: ${doc.id}, chyba: $e');
+                return null; // Vrátí null pro problémové dokumenty
+              }
+            })
+            .whereType<PetrolStation>()
+            .toList();
 
         filteredStations = List.from(stations); // Inicializace filtrování
       });
@@ -88,12 +90,14 @@ class _PetrolPricesScreenState extends State<PetrolPricesScreen> {
     // Získání aktuální polohy uživatele
     try {
       LocationPermission permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
         print("Uživatel zamítl přístup k poloze.");
         return;
       }
 
-      final Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      final Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
       final double currentLat = position.latitude;
       final double currentLon = position.longitude;
 
@@ -102,8 +106,10 @@ class _PetrolPricesScreenState extends State<PetrolPricesScreen> {
       // Seřadíme benzínky podle vzdálenosti
       final List<PetrolStation> sortedStations = List.from(stations);
       sortedStations.sort((a, b) {
-        final distanceA = calculateDistance(currentLat, currentLon!, a.lat, a.lon);
-        final distanceB = calculateDistance(currentLat!, currentLon!, b.lat, b.lon);
+        final distanceA =
+            calculateDistance(currentLat, currentLon!, a.lat, a.lon);
+        final distanceB =
+            calculateDistance(currentLat!, currentLon!, b.lat, b.lon);
         a.distanceFromUser = distanceA; // Uložíme vzdálenost pro zobrazení
         b.distanceFromUser = distanceB;
         return distanceA.compareTo(distanceB);
@@ -154,10 +160,12 @@ class _PetrolPricesScreenState extends State<PetrolPricesScreen> {
         });
 
         setState(() {
-          filteredStations = sortedStations.take(15).toList(); // Omezíme na 15 nejbližších
+          filteredStations =
+              sortedStations.take(15).toList(); // Omezíme na 15 nejbližších
         });
 
-        print("Aktualizovaný seznam benzínek: ${filteredStations.map((e) => e.name).toList()}");
+        print(
+            "Aktualizovaný seznam benzínek: ${filteredStations.map((e) => e.name).toList()}");
 
         // Načteme adresy pro zobrazené benzínky
         await fetchAddressForVisibleStations(0, filteredStations.length);
@@ -169,8 +177,8 @@ class _PetrolPricesScreenState extends State<PetrolPricesScreen> {
     }
   }
 
-
-  Future<void> fetchAddressForVisibleStations(int startIndex, int endIndex) async {
+  Future<void> fetchAddressForVisibleStations(
+      int startIndex, int endIndex) async {
     final visibleStations = filteredStations
         .sublist(startIndex, endIndex)
         .where((station) => station.address == null)
@@ -184,15 +192,15 @@ class _PetrolPricesScreenState extends State<PetrolPricesScreen> {
     }
   }
 
-
   double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
     const R = 6371; // Poloměr Země v kilometrech
     final dLat = _degToRad(lat2 - lat1);
     final dLon = _degToRad(lon2 - lon1);
-    final a =
-        sin(dLat / 2) * sin(dLat / 2) +
-            cos(_degToRad(lat1)) * cos(_degToRad(lat2)) *
-                sin(dLon / 2) * sin(dLon / 2);
+    final a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(_degToRad(lat1)) *
+            cos(_degToRad(lat2)) *
+            sin(dLon / 2) *
+            sin(dLon / 2);
     final c = 2 * atan2(sqrt(a), sqrt(1 - a));
     return R * c;
   }
@@ -236,147 +244,149 @@ class _PetrolPricesScreenState extends State<PetrolPricesScreen> {
             ),
           ),
           Expanded(
-            child: filteredStations.isEmpty
-                ? const Center(child: CircularProgressIndicator())
-            :ListView.builder(
-              itemCount: filteredStations.length,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemBuilder: (context, index) {
-                final station = filteredStations[index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PetrolStationDetailScreen(station: station),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: colorScheme.secondary,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 6,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Ikona benzínky
-                        Icon(
-                          Icons.local_gas_station,
-                          color: colorScheme.onSurface,
-                          size: 30,
-                        ),
-                        const SizedBox(width: 16),
-                        // Informace o benzínce
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                station.name,
-                                style: TextStyle(
+              child: filteredStations.isEmpty
+                  ? const Center(child: CircularProgressIndicator())
+                  : ListView.builder(
+                      itemCount: filteredStations.length,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemBuilder: (context, index) {
+                        final station = filteredStations[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    PetrolStationDetailScreen(station: station),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: colorScheme.secondary,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Ikona benzínky
+                                Icon(
+                                  Icons.local_gas_station,
                                   color: colorScheme.onSurface,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
+                                  size: 30,
                                 ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                formatAddress(station.address),
-                                style: TextStyle(
-                                  color: colorScheme.onSurface.withOpacity(0.7),
-                                  fontSize: 14,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.location_pin,
-                                    color: colorScheme.primary,
-                                    size: 18,
+                                const SizedBox(width: 16),
+                                // Informace o benzínce
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        station.name,
+                                        style: TextStyle(
+                                          color: colorScheme.onSurface,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        formatAddress(station.address),
+                                        style: TextStyle(
+                                          color: colorScheme.onSurface
+                                              .withOpacity(0.7),
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.location_pin,
+                                            color: colorScheme.primary,
+                                            size: 18,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            station.distanceFromUser != null
+                                                ? (station.distanceFromUser! >=
+                                                        1
+                                                    ? '${station.distanceFromUser!.toStringAsFixed(1)} km'
+                                                    : '${(station.distanceFromUser! * 1000).toInt()} m')
+                                                : 'Načítání vzdálenosti...',
+                                            style: TextStyle(
+                                              color: colorScheme.onSurface
+                                                  .withOpacity(0.7),
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    station.distanceFromUser != null
-                                        ? (station.distanceFromUser! >= 1
-                                        ? '${station.distanceFromUser!.toStringAsFixed(1)} km'
-                                        : '${(station.distanceFromUser! * 1000).toInt()} m')
-                                        : 'Načítání vzdálenosti...',
-
-                                    style: TextStyle(
-                                      color: colorScheme.onSurface.withOpacity(0.7),
-                                      fontSize: 14,
+                                ),
+                                // Ceny paliv
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      'Benzín:',
+                                      style: TextStyle(
+                                        color: colorScheme.onSurface
+                                            .withOpacity(0.7),
+                                        fontSize: 14,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                    Text(
+                                      station.petrolPrice != null
+                                          ? '${station.petrolPrice} Kč'
+                                          : '--',
+                                      style: TextStyle(
+                                        color: colorScheme.onSurface,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Nafta:',
+                                      style: TextStyle(
+                                        color: colorScheme.onSurface
+                                            .withOpacity(0.7),
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    Text(
+                                      station.dieselPrice != null
+                                          ? '${station.dieselPrice} Kč'
+                                          : '--',
+                                      style: TextStyle(
+                                        color: colorScheme.onSurface,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        // Ceny paliv
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              'Benzín:',
-                              style: TextStyle(
-                                color: colorScheme.onSurface.withOpacity(0.7),
-                                fontSize: 14,
-                              ),
-                            ),
-                            Text(
-                              station.petrolPrice != null
-                                  ? '${station.petrolPrice} Kč'
-                                  : '--',
-                              style: TextStyle(
-                                color: colorScheme.onSurface,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Nafta:',
-                              style: TextStyle(
-                                color: colorScheme.onSurface.withOpacity(0.7),
-                                fontSize: 14,
-                              ),
-                            ),
-                            Text(
-                              station.dieselPrice != null
-                                  ? '${station.dieselPrice} Kč'
-                                  : '--',
-                              style: TextStyle(
-                                color: colorScheme.onSurface,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            )
-
-
-          ),
+                        );
+                      },
+                    )),
         ],
       ),
     );
     ;
   }
-
 }
