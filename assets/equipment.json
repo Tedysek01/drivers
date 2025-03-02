@@ -1,0 +1,163 @@
+{
+    "equipment": {
+      "Klimatizace": [
+        "Bez omezení",
+        "Automatická klimatizace, 2 zóny",
+        "Automatická klimatizace, 3 zóny",
+        "Automatická klimatizace, 4 zóny",
+        "Automatická klimatizace",
+        "Bez klimatizace",
+        "Manuální nebo automatická klimatizace",
+        "Ionizátor vzduchu",
+        "Čistička vzduchu",
+        "Vůně interiéru"
+      ],
+      "Prvky interiéru": [
+        "Bluetooth",
+        "Centrální zamykání",
+        "Elektrická boční zrcátka",
+        "Elektrické nastavení sedadla",
+        "Elektrické ovládání oken",
+        "Elektricky vyhřívaná sedadla",
+        "Handsfree souprava",
+        "MP3 připojení",
+        "Isofix (ukotvení dětské sedačky)",
+        "Multifunkční volant",
+        "Navigace",
+        "Odvětrávaná sedadla",
+        "Palubní počítač",
+        "Posilovač řízení",
+        "Přehrávač CD",
+        "Přídavné topení",
+        "Senzor deště",
+        "Střešní okno",
+        "Systém start-stop",
+        "Průhledový displej (HUD)",
+        "Vak na lyže",
+        "Vyhřívané loketní opěrky",
+        "Sklopné opěrky hlavy",
+        "Nastavitelná bederní opěrka",
+        "Ambientní osvětlení",
+        "Hliníkové pedály",
+        "Bezdrátové nabíjení telefonu"
+      ],
+      "Bezpečnostní": [
+        "ABS (Antiblokovací systém brzd)",
+        "Bezklíčový vstup",
+        "ESP (Elektronický stabilizační program)",
+        "Imobilizér",
+        "Mlhovky",
+        "Monitor slepého úhlu",
+        "Pohon všech kol (4x4)",
+        "Regulace prokluzu kol (ASR)",
+        "Senzor osvětlení",
+        "Systém chránící před střety",
+        "Systém upozornění na opuštění jízdního pruhu",
+        "Asistent rozjezdu do kopce",
+        "Detekce únavy řidiče",
+        "Automatické nouzové brzdění",
+        "Asistent pro jízdu v kolonách",
+        "Ochrana chodců",
+        "Rozpoznávání dopravních značek",
+        "Sledování tlaku v pneumatikách"
+      ],
+      "Rádio a multimédia": [
+        "DAB rádio",
+        "Tuner/rádio",
+        "Apple CarPlay",
+        "Android Auto",
+        "Wi-Fi hotspot",
+        "Prémiový audio systém (např. Bose, Bang & Olufsen, Harman Kardon)",
+        "USB porty",
+        "SD karta",
+        "DVD přehrávač",
+        "Subwoofer",
+        "Hlasové ovládání"
+      ],
+      "Tempomat a asistenti": [
+        "Adaptivní tempomat",
+        "Tempomat",
+        "Asistent změny jízdního pruhu",
+        "Automatický parkovací asistent",
+        "Parkovací senzory vpředu",
+        "Parkovací senzory vzadu",
+        "360° kamera",
+        "Zadní parkovací kamera",
+        "Přední parkovací kamera"
+      ],
+      "Světlomety": [
+        "Bi-xenonové světlomety",
+        "Laserové světlomety",
+        "LED světlomety",
+        "Xenonové světlomety",
+        "Adaptivní natáčecí světlomety",
+        "Denní LED svícení",
+        "Automatické dálkové světlomety",
+        "Matrix LED světlomety",
+        "Ostřikovače světlometů"
+      ],
+      "Přípojka pro přívěs": [
+        "Odnímatelné tažné zařízení",
+        "Výklopné tažné zařízení",
+        "Pevné tažné zařízení",
+        "Příprava na tažné zařízení"
+      ],
+      "Posuvné dveře": [
+        "Posuvné dveře na obou stranách",
+        "Posuvné dveře vlevo",
+        "Posuvné dveře vpravo",
+        "Elektricky ovládané posuvné dveře"
+      ],
+      "Airbagy": [
+        "Přední airbagy",
+        "Boční airbagy",
+        "Hlavové airbagy",
+        "Kolenní airbagy",
+        "Zadní airbagy"
+      ],
+      "Kamery a parkovací systémy": [
+        "Zadní parkovací kamera",
+        "Přední parkovací kamera",
+        "360° kamera",
+        "Automatický parkovací systém",
+        "Parkovací senzory vpředu",
+        "Parkovací senzory vzadu"
+      ],
+      "Sportovní výbava": [
+        "Sportovní odpružení",
+        "Sportovní paket",
+        "Sportovní sedačky",
+        "Sportovní volant",
+        "Výfukový systém s aktivními klapkami"
+      ],
+      "Zvláštní výbava": [
+        "Litá kola",
+        "Panoramatická střecha",
+        "Výbava pro tělesně postižené",
+        "Střešní nosič",
+        "TAXI paket",
+        "Off-road paket",
+        "Sada zimních kol"
+      ],
+      "Typ interiéru": [
+        "Celokožený interiér",
+        "Částečně kožený interiér",
+        "Látkový interiér",
+        "Velurový interiér",
+        "Alcantara",
+        "Jiný materiál",
+        "Koženka"
+      ],
+      "Barva interiéru": [
+        "Černá",
+        "Šedá",
+        "Béžová",
+        "Hnědá",
+        "Jiná",
+        "Červená",
+        "Modrá",
+        "Bílá"
+      ]
+    }
+  }
+  

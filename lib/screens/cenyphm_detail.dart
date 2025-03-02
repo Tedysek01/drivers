@@ -20,7 +20,7 @@ class PetrolStationDetailScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Zpětná navigace
-              const SizedBox(height: 20),
+              const SizedBox(height: 40),
               GestureDetector(
                 onTap: () {
                   Navigator.pop(context); // Návrat zpět

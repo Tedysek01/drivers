@@ -29,28 +29,36 @@ class FunRoute {
     this.distanceFromUser,
   });
 
-  // Factory metoda pro vytvoření objektu z Firestore
-  factory FunRoute.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
+ factory FunRoute.fromFirestore(DocumentSnapshot doc) {
+  final data = doc.data() as Map<String, dynamic>;
 
-    // Převod `path` na seznam GeoPointů
-    final List<GeoPoint> pathPoints = (data['path'] as List<dynamic>)
+  // 🛠️ Ověření, zda je `path` seznam nebo mapa
+  List<GeoPoint> pathPoints = [];
+  if (data['path'] is List) {
+    // ✅ Pokud je `path` už seznamem, jen ho převedeme
+    pathPoints = (data['path'] as List<dynamic>)
         .map((point) => point as GeoPoint)
         .toList();
-
-    return FunRoute(
-      id: doc.id,
-      name: data['name'] ?? '',
-      description: data['description'] ?? '',
-      category: data['category'] ?? '',
-      imageUrl: data['imageUrl'] ?? '',
-      length: (data['length'] ?? 0).toDouble(),
-      rating: (data['rating'] ?? 0).toDouble(),
-      startLocation: data['startLocation'] as GeoPoint,
-      endLocation: data['endLocation'] as GeoPoint,
-      path: pathPoints,
-    );
+  } else if (data['path'] is Map) {
+    // ✅ Pokud je `path` mapou, převedeme ji na List
+    final Map<String, dynamic> pathMap = data['path'];
+    pathPoints = pathMap.values.whereType<GeoPoint>().toList();
   }
+
+  return FunRoute(
+    id: doc.id,
+    name: data['name'] ?? '',
+    description: data['description'] ?? '',
+    category: data['category'] ?? '',
+    imageUrl: data['imageUrl'] ?? '',
+    length: (data['length'] ?? 0).toDouble(),
+    rating: (data['rating'] ?? 0).toDouble(),
+    startLocation: data['startLocation'] as GeoPoint,
+    endLocation: data['endLocation'] as GeoPoint,
+    path: pathPoints,
+  );
+}
+
 
   // Metoda pro převod objektu na Map (pro uložení do Firestore)
   Map<String, dynamic> toFirestore() {

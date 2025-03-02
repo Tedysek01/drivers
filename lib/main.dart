@@ -8,6 +8,7 @@ import 'package:drivers/screens/messagescreen.dart';
 import 'package:drivers/screens/notificationscreen.dart';
 import 'package:drivers/style/barvy.dart';
 import 'package:drivers/upload_stations.dart';
+import 'package:drivers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +25,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => DataProvider()..loadData()),
+        ChangeNotifierProvider(create: (context) => UserProvider()..loadUserData()),
       ],
       child: MyApp(), // Zde už předáváš správně child
     ),
@@ -42,7 +44,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange)),
 
-      home: LoadingScreen(), // MainApp includes the BottomNavigationBar
+      home: LoadingScreen(),
     );
   }
 }
@@ -62,8 +64,8 @@ class _MainAppState extends State<MainApp> {
     MyHomePage(stations: []),
     Explore(),
     Container(), // Placeholder, since CreatePopup is not a screen
-    MessagesScreen(),
-    AccountScreen(),
+    ChatListScreen(),
+    ProfileScreen(),
   ];
 
   @override
@@ -71,54 +73,97 @@ class _MainAppState extends State<MainApp> {
     return Scaffold(
       body: _screens[_currentIndex], // Display the currently selected screen
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: colorScheme.secondary,
-        selectedItemColor: colorScheme.primary,
-        unselectedItemColor: colorScheme.onPrimary,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          if (index == 2) {
-            CreatePopup.show(
-                context); // Open the popup when the user clicks "+"
-          } else {
-            setState(() {
-              _currentIndex = index; // Navigate to other screens
-            });
-          }
-        },
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            activeIcon: Image.asset(
-              'assets/home.png',
-              color: colorScheme.primary,
-            ),
-            icon: Image.asset('assets/home.png'),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            activeIcon: Image.asset(
-              'assets/hledat.png',
-              color: colorScheme.primary,
-            ),
-            icon: Image.asset('assets/hledat.png'),
-            label: 'Notifications',
-          ),
-          BottomNavigationBarItem(
-            icon: Image.asset('assets/pridat.png'),
-            label: 'Add',
-          ),
-          BottomNavigationBarItem(
-            icon: Image.asset('assets/zpravy.png'),
-            label: 'Account',
-          ),
-          BottomNavigationBarItem(
-            icon: Image.asset('assets/profil.png'),
-            label: 'Account',
-          ),
-        ],
+  type: BottomNavigationBarType.fixed,
+  backgroundColor: colorScheme.secondary,
+  selectedItemColor: colorScheme.primary,
+  unselectedItemColor: colorScheme.onPrimary,
+  showSelectedLabels: true,
+  showUnselectedLabels: false,
+  iconSize: 32, // 🔥 Nastavení globální velikosti ikon
+  currentIndex: _currentIndex,
+  onTap: (index) {
+    if (index == 2) {
+      CreatePopup.show(context); // Otevře popup místo navigace
+    } else {
+      setState(() {
+        _currentIndex = index;
+      });
+    }
+  },
+  items: <BottomNavigationBarItem>[
+    BottomNavigationBarItem(
+      activeIcon: Image.asset(
+        'assets/home.png',
+        color: colorScheme.primary,
+        width: 32, 
+        height: 32,
       ),
+      icon: Image.asset(
+        'assets/home.png',
+        width: 30, 
+        height: 30,
+      ),
+      label: 'Domov',
+    ),
+    BottomNavigationBarItem(
+      activeIcon: Image.asset(
+        'assets/hledat.png',
+        color: colorScheme.primary,
+        width: 32,
+        height: 32,
+      ),
+      icon: Image.asset(
+        'assets/hledat.png',
+        width: 30,
+        height: 30,
+      ),
+      label: 'Objevovat',
+    ),
+    BottomNavigationBarItem(
+      activeIcon: Image.asset(
+        'assets/pridat.png',
+        color: colorScheme.primary,
+        width: 24, 
+        height: 24,
+      ),
+      icon: Image.asset(
+        'assets/pridat.png',
+        width: 32,
+        height: 32,
+      ),
+      label: 'Přidat',
+    ),
+    BottomNavigationBarItem(
+      activeIcon: Image.asset(
+        'assets/zpravy.png',
+        color: colorScheme.primary,
+        width: 32,
+        height: 32,
+      ),
+      icon: Image.asset(
+        'assets/zpravy.png',
+        width: 30,
+        height: 30,
+      ),
+      label: 'Zprávy',
+    ),
+    BottomNavigationBarItem(
+      activeIcon: Image.asset(
+        'assets/profil.png',
+        color: colorScheme.primary,
+        width: 32,
+        height: 32,
+      ),
+      icon: Image.asset(
+        'assets/profil.png',
+        width: 30,
+        height: 30,
+      ),
+      label: 'Profil',
+    ),
+  ],
+),
+
     );
   }
 }

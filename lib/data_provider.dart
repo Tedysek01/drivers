@@ -17,106 +17,105 @@ class DataProvider extends ChangeNotifier {
 
   bool get isLoaded => _stations != null;
 
+  
+  Future<void> _loadStationsFromCache() async {
+  final prefs = await SharedPreferences.getInstance();
+  final cachedStations = prefs.getStringList('stations_cache');
+
+  if (cachedStations != null) {
+    _stations = cachedStations.map((stationString) {
+      final data = jsonDecode(stationString);
+      return PetrolStation(
+        id: data['id'],
+        name: data['name'],
+        lat: data['lat'],
+        lon: data['lon'],
+        address: data['address'],
+      );
+    }).toList();
+
+    print("✅ Načteno ${_stations!.length} benzínek z cache.");
+  }
+}
+
+  
+  
   /// 🔹 Načtení dat o benzínkách
   Future<void> loadData() async {
-    if (_stations == null) {
-      await _loadStationsFromCache(); // Nejdříve se pokusíme načíst z cache
-    }
+  if (_stations == null) {
+    await _loadStationsFromCache();
+  }
 
-    try {
-      print("🔄 Načítám aktuální ceny a vzdálenost...");
+  try {
+    print("🔄 Načítám aktuální ceny a vzdálenost...");
 
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
+    final snapshot = await FirebaseFirestore.instance.collection('stations').get();
+    List<PetrolStation> updatedStations = snapshot.docs.map((doc) {
+      final data = doc.data();
+      return PetrolStation(
+        id: doc.id,
+        name: data['name'] ?? 'Neznámá benzínka',
+        lat: data['lat'],
+        lon: data['lon'],
+        address: data['address'],
+        dieselPrice: data['dieselPrice'],
+        petrolPrice: data['petrolPrice'],
       );
+    }).toList();
 
-      final snapshot = await FirebaseFirestore.instance.collection('stations').get();
-      List<PetrolStation> updatedStations = snapshot.docs.map((doc) {
-        final data = doc.data();
-        return PetrolStation(
-          id: doc.id,
-          name: data['name'] ?? 'Neznámá benzínka',
-          lat: data['lat'],
-          lon: data['lon'],
-          address: _stations?.firstWhere((s) => s.id == doc.id, orElse: () => PetrolStation(id: doc.id, name: '', lat: 0, lon: 0)).address ?? data['address'],
-          dieselPrice: data['dieselPrice'],
-          petrolPrice: data['petrolPrice'],
-        );
-      }).toList();
+    print("📌 Načteno ${updatedStations.length} benzínek z Firebase.");
 
-      _stations = updatedStations; // Aktualizujeme data v paměti
+    // Vypočítej vzdálenosti
+    for (var station in updatedStations) {
+      double distance = Geolocator.distanceBetween(
+        position.latitude, position.longitude, station.lat, station.lon,
+      ) / 1000; // Převod na km
+      station.distanceFromUser = distance;
+      //print("📍 ${station.name} - $distance km");
+    }
 
-      // Najdi nejlevnější benzínku do 10 km
-      List<PetrolStation> nearbyStations = _stations!.where((station) {
-        double distance = Geolocator.distanceBetween(
-          position.latitude, position.longitude, station.lat, station.lon,
-        ) / 1000;
-        return distance <= 10;
-      }).toList();
+    _stations = updatedStations;
 
-      nearbyStations.sort((a, b) {
-        double priceA = a.petrolPrice != null ? double.parse(a.petrolPrice!) : double.infinity;
-        double priceB = b.petrolPrice != null ? double.parse(b.petrolPrice!) : double.infinity;
-        return priceA.compareTo(priceB);
-      });
+    // 🔥 Najdi nejlevnější benzínku do 10 km
 
-      if (nearbyStations.isNotEmpty) {
-        _cheapestStation = nearbyStations.first;
-        _distanceToUser = Geolocator.distanceBetween(
-          position.latitude, position.longitude, _cheapestStation!.lat, _cheapestStation!.lon,
-        ) / 1000;
 
-        print("⛽ Nejlevnější benzínka: ${_cheapestStation!.name}, cena: ${_cheapestStation!.petrolPrice} Kč");
+    
+    List<PetrolStation> nearbyStations = _stations!.where((station) {
+      return station.distanceFromUser != null && station.distanceFromUser! <= 10;
+    }).toList();
 
-        // Načti adresu, pokud chybí
-        if (_cheapestStation!.address == null || _cheapestStation!.address!.isEmpty) {
-          await fetchAddress(_cheapestStation!);
-        }
+    print("🔍 Počet benzínek do 10 km: ${nearbyStations.length}");
+
+    // Seřadit podle ceny benzínu
+    nearbyStations.sort((a, b) {
+      double priceA = a.petrolPrice != null ? double.tryParse(a.petrolPrice!) ?? double.infinity : double.infinity;
+      double priceB = b.petrolPrice != null ? double.tryParse(b.petrolPrice!) ?? double.infinity : double.infinity;
+      return priceA.compareTo(priceB);
+    });
+
+    if (nearbyStations.isNotEmpty) {
+      _cheapestStation = nearbyStations.first;
+      _distanceToUser = _cheapestStation!.distanceFromUser;
+
+      print("⛽ Nejlevnější benzínka: ${_cheapestStation!.name} - ${_cheapestStation!.petrolPrice} Kč");
+
+      if (_cheapestStation!.address == null || _cheapestStation!.address!.isEmpty) {
+        await fetchAddress(_cheapestStation!);
       }
-
-      // Ulož názvy a adresy benzínek do cache
-      await _saveStationsToCache(_stations!);
-
-      notifyListeners();
-    } catch (e) {
-      print("❌ Chyba při načítání dat: $e");
+    } else {
+      print("🚨 Žádná benzínka nesplňuje podmínky (vzdálenost ≤ 10 km).");
     }
+
+    notifyListeners();
+  } catch (e) {
+    print("❌ Chyba při načítání dat: $e");
   }
+}
 
-  /// 🔹 Uložení názvů a adres benzínek do cache
-  Future<void> _saveStationsToCache(List<PetrolStation> stations) async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String> stationList = stations.map((station) => jsonEncode({
-      'id': station.id,
-      'name': station.name,
-      'lat': station.lat,
-      'lon': station.lon,
-      'address': station.address,
-    })).toList();
-
-    prefs.setStringList('stations_cache', stationList);
-  }
-
-  /// 🔹 Načtení názvů a adres benzínek z cache
-  Future<void> _loadStationsFromCache() async {
-    final prefs = await SharedPreferences.getInstance();
-    final cachedStations = prefs.getStringList('stations_cache');
-
-    if (cachedStations != null) {
-      _stations = cachedStations.map((stationString) {
-        final data = jsonDecode(stationString);
-        return PetrolStation(
-          id: data['id'],
-          name: data['name'],
-          lat: data['lat'],
-          lon: data['lon'],
-          address: data['address'],
-        );
-      }).toList();
-
-      print("✅ Načteno ${_stations!.length} benzínek z cache.");
-    }
-  }
 
   /// 🔹 Načtení adresy z Google Geocoding API
   Future<void> fetchAddress(PetrolStation station) async {

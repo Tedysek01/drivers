@@ -29,7 +29,7 @@ class _EventDetailsState extends State<EventDetails> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 20),
+            const SizedBox(height: 40),
             Row(
               children: [
                 GestureDetector(
